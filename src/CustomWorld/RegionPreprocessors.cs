@@ -21,6 +21,7 @@ namespace CustomRegions.CustomWorld
             public string RegionID { get; internal set; }
 
             public SlugcatStats.Name playerCharacter { get; internal set; }
+            public SlugcatStats.Timeline timeline { get; internal set; }
             /// <summary>
             /// World lines from world_XX.txt file.
             /// </summary>

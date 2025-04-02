@@ -215,8 +215,8 @@ namespace CustomRegions.RegionProperties
 
         public static void ApplyHooks()
         {
-            IL.Region.ctor += Region_ctor;
-            IL.World.LoadMapConfig += World_LoadMapConfig;
+            IL.Region.ctor_string_int_int_Timeline += Region_ctor;
+            IL.World.LoadMapConfig_Timeline += World_LoadMapConfig;
         }
 
         private static void World_LoadMapConfig(ILContext il)
@@ -227,6 +227,7 @@ namespace CustomRegions.RegionProperties
             {
                 c.Emit(OpCodes.Ldarg_0);
                 c.Emit(OpCodes.Ldfld, typeof(World).GetField("region"));
+                c.Emit(OpCodes.Ldnull);
                 c.Emit(OpCodes.Ldarg, 1);
                 c.EmitDelegate(GenerateProperties);
             }
@@ -244,6 +245,7 @@ namespace CustomRegions.RegionProperties
             if (c.TryGotoNext(MoveType.After, x => x.MatchCall(typeof(System.IO.File), nameof(System.IO.File.ReadAllLines))))
             {
                 c.Emit(OpCodes.Ldarg_0);
+                c.Emit(OpCodes.Ldnull);
                 c.Emit(OpCodes.Ldarg, 4);
                 c.EmitDelegate(GenerateProperties);
             }
@@ -253,12 +255,12 @@ namespace CustomRegions.RegionProperties
             }
         }
 
-        public static string[] GenerateProperties(string[] lines, Region self, SlugcatStats.Name slug)
+        public static string[] GenerateProperties(string[] lines, Region self, SlugcatStats.Name slug, SlugcatStats.Timeline timeline)
         {
             try
             {
                 RawProperties p = self.regionParams.GetRawProperties();
-                foreach (string line in PreprocessProperties(lines, self, slug))
+                foreach (string line in PreprocessProperties(lines, self, slug, timeline))
                 {
                     if (line.IsNullOrWhiteSpace()) continue;
 
@@ -282,13 +284,15 @@ namespace CustomRegions.RegionProperties
             }
         }
 
-        public static string[] PreprocessProperties(string[] lines, Region self, SlugcatStats.Name slug)
+        public static string[] PreprocessProperties(string[] lines, Region self, SlugcatStats.Name slug, SlugcatStats.Timeline timeline)
         {
             RegionInfo regionInfo = new()
             {
                 RegionID = self.name,
                 Lines = lines.ToList(),
-                playerCharacter = slug
+                playerCharacter = slug,
+                timeline = timeline
+                
             };
 
             foreach (RegionPreprocessor filter in regionPreprocessors)
@@ -300,7 +304,7 @@ namespace CustomRegions.RegionProperties
                 catch (Exception e) { CustomRegionsMod.CustomLog($"Error when executing PreProcessor [{filter.Method.Name}]\n" + e.ToString(), true); }
             }
 
-            return Utils.ProcessSlugcatConditions(regionInfo.Lines, slug).ToArray();
+            return Utils.ProcessSlugcatConditions(regionInfo.Lines, slug ?? (timeline != null ? new(timeline.value, false) : null)).ToArray();
         }
 
         public static RawProperties GetParentProperties(Region self, string parentName)

@@ -1,5 +1,5 @@
 
-## You are seeing the version of CRS for Rain World v1.9 / Downpour, for the legacy version (v1.5), please visit [here](https://github.com/Garrakx/Custom-Regions/tree/master)!
+## You are seeing the version of CRS for Rain World v1.10 / Watcher; For the Downpour version (v1.9.15), please visit [here.](https://github.com/Garrakx/Custom-Regions/tree/dp-release) For the legacy version (v1.5), please visit [here.](https://github.com/Garrakx/Custom-Regions/tree/master)
 ***
 # Custom Regions Support (CRS)
 ***

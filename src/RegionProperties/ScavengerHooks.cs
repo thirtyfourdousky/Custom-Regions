@@ -53,7 +53,7 @@ namespace CustomRegions.RegionProperties
             orig(self, throwDir);
         }
 
-        private static int ScavengerAI_WeaponScore(On.ScavengerAI.orig_WeaponScore orig, ScavengerAI self, PhysicalObject obj, bool pickupDropInsteadOfWeaponSelection)
+        private static int ScavengerAI_WeaponScore(On.ScavengerAI.orig_WeaponScore orig, ScavengerAI self, PhysicalObject obj, bool pickupDropInsteadOfWeaponSelection, bool reallyWantsSpear)
         {
             var dict = self.scavenger.room?.world.region?.GetCRSProperties().scavScoreItems;
             if (dict != null && obj is Creature c)
@@ -72,7 +72,7 @@ namespace CustomRegions.RegionProperties
                     return 3;
                 }
             }
-            return orig(self, obj, pickupDropInsteadOfWeaponSelection);
+            return orig(self, obj, pickupDropInsteadOfWeaponSelection, reallyWantsSpear);
         }
 
         private static void AbstractCreature_IsEnteringDen(On.AbstractCreature.orig_IsEnteringDen orig, AbstractCreature self, WorldCoordinate den)
@@ -110,7 +110,7 @@ namespace CustomRegions.RegionProperties
                 {
                     var p = self.parent.world.region?.GetCRSProperties();
                     if (p == null) return i;
-                    bool elite = self.parent.creatureTemplate.type == MoreSlugcats.MoreSlugcatsEnums.CreatureTemplateType.ScavengerElite;
+                    bool elite = self.parent.creatureTemplate.type == DLCSharedEnums.CreatureTemplateType.ScavengerElite;
                     var items = elite ? p.eliteScavGearItems : p.scavGearItems;
                     var room = self.world.GetAbstractRoom(self.parent.pos);
 
@@ -255,7 +255,7 @@ namespace CustomRegions.RegionProperties
             {
                 return new JokeRifle.AbstractRifle(world, null, pos, id, JokeRifle.AbstractRifle.AmmoType.Rock);
             }
-            if (type == MoreSlugcats.MoreSlugcatsEnums.AbstractObjectType.LillyPuck)
+            if (type == DLCSharedEnums.AbstractObjectType.LillyPuck)
             {
                 return new MoreSlugcats.LillyPuck.AbstractLillyPuck(world, null, pos, id, 3, -1, -1, null);
             }

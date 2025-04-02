@@ -127,7 +127,7 @@ namespace CustomRegions.Collectables
 
         public static string SearchConvoFile(Conversation.IOwnAConversation interfaceOwner, string fileName, SlugcatStats.Name saveFile, out InGameTranslator.LanguageID languageID, Oracle.OracleID oracleID = null, bool iteratorExclusive = false, bool slugExclusive = false)
         {
-            languageID = interfaceOwner.rainWorld.inGameTranslator.currentLanguage;
+            languageID = RWCustom.Custom.rainWorld.inGameTranslator.currentLanguage;
 
             string oracleName = "";
             if (oracleID != null) oracleName = oracleID.value + Path.DirectorySeparatorChar;
@@ -142,8 +142,8 @@ namespace CustomRegions.Collectables
 
                 for (int j = 0; j < 2; j++)
                 {
-                    languageID = j == 0 ? interfaceOwner.rainWorld.inGameTranslator.currentLanguage : InGameTranslator.LanguageID.English;
-                    string langDirectory = interfaceOwner.rainWorld.inGameTranslator.SpecificTextFolderDirectory(languageID) + Path.DirectorySeparatorChar;
+                    languageID = j == 0 ? RWCustom.Custom.rainWorld.inGameTranslator.currentLanguage : InGameTranslator.LanguageID.English;
+                    string langDirectory = RWCustom.Custom.rainWorld.inGameTranslator.SpecificTextFolderDirectory(languageID) + Path.DirectorySeparatorChar;
                     string text = i switch
                     {
                         0 => langDirectory + oracleName + fileName + slugName + ".txt",

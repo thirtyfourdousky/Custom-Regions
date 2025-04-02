@@ -97,7 +97,7 @@ namespace CustomRegions.CustomWorld
 
         public static void ApplyHooks()
         {
-            On.WorldLoader.ctor_RainWorldGame_Name_bool_string_Region_SetupValues += WorldLoader_ctor_RainWorldGame_Name_bool_string_Region_SetupValues;
+            On.WorldLoader.ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues += WorldLoader_ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues;
             On.WorldLoader.CreatingWorld += WorldLoader_CreatingWorld;
             On.WorldLoader.GeneratePopulation += WorldLoader_GeneratePopulation;
             //On.RegionState.AdaptWorldToRegionState += RegionState_AdaptWorldToRegionState;
@@ -218,9 +218,9 @@ namespace CustomRegions.CustomWorld
             orig(self);
         }
 
-        private static void WorldLoader_ctor_RainWorldGame_Name_bool_string_Region_SetupValues(On.WorldLoader.orig_ctor_RainWorldGame_Name_bool_string_Region_SetupValues orig, WorldLoader self, RainWorldGame game, SlugcatStats.Name playerCharacter, bool singleRoomWorld, string worldName, Region region, RainWorldGame.SetupValues setupValues)
+        private static void WorldLoader_ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues(On.WorldLoader.orig_ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues orig, WorldLoader self, RainWorldGame game, SlugcatStats.Name playerCharacter, SlugcatStats.Timeline timelinePosition, bool singleRoomWorld, string worldName, Region region, RainWorldGame.SetupValues setupValues)
         {
-            try { orig(self, game, playerCharacter, singleRoomWorld, worldName, region, setupValues); }
+            try { orig(self, game, playerCharacter, timelinePosition, singleRoomWorld, worldName, region, setupValues); }
             catch(Exception e) { CustomRegionsMod.CustomLog(e.ToString(), true); }
 
             if (singleRoomWorld) return;

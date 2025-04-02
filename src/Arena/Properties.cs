@@ -12,8 +12,8 @@ namespace CustomRegions.Arena
     {
         public static void ApplyHooks()
         {
-            On.OverWorld.LoadWorld += OverWorld_LoadWorld;
-            On.Region.ctor += Region_ctor;
+            On.OverWorld.LoadWorld_string_Name_Timeline_bool += OverWorld_LoadWorld_string_Name_Timeline_bool;
+            On.Region.ctor_string_int_int_Timeline += Region_ctor_string_int_int_Timeline;
             IL.Menu.MultiplayerMenu.ctor += MultiplayerMenu_ctor;
         }
 
@@ -36,23 +36,23 @@ namespace CustomRegions.Arena
             }
         }
 
-        private static void OverWorld_LoadWorld(On.OverWorld.orig_LoadWorld orig, OverWorld self, string worldName, SlugcatStats.Name playerCharacterNumber, bool singleRoomWorld)
+        private static void OverWorld_LoadWorld_string_Name_Timeline_bool(On.OverWorld.orig_LoadWorld_string_Name_Timeline_bool orig, OverWorld self, string worldName, SlugcatStats.Name playerCharacterNumber, SlugcatStats.Timeline time, bool singleRoomWorld)
         {
-            orig(self, worldName, playerCharacterNumber, singleRoomWorld);
+            orig(self, worldName, playerCharacterNumber, time, singleRoomWorld);
 
             if (singleRoomWorld)
             {
                 string text = WorldLoader.FindRoomFile(self.activeWorld.GetAbstractRoom(0).name, false, "_Properties.txt");
                 if (File.Exists(text))
                 {
-                    self.activeWorld.region = new Region(self.activeWorld.GetAbstractRoom(0).name, 0, -1, null);
+                    self.activeWorld.region = new Region(self.activeWorld.GetAbstractRoom(0).name, 0, -1, timelineIndex: null);
                 }
             }
         }
 
-        private static void Region_ctor(On.Region.orig_ctor orig, Region self, string name, int firstRoomIndex, int regionNumber, SlugcatStats.Name storyIndex)
+        private static void Region_ctor_string_int_int_Timeline(On.Region.orig_ctor_string_int_int_Timeline orig, Region self, string name, int firstRoomIndex, int regionNumber, SlugcatStats.Timeline timelineIndex)
         {
-            orig(self, name, firstRoomIndex, regionNumber, storyIndex);
+            orig(self, name, firstRoomIndex, regionNumber, timelineIndex);
 
             try
             {
@@ -62,7 +62,7 @@ namespace CustomRegions.Arena
                 if (!File.Exists(properties)) return;
 
                 CustomRegionsMod.CustomLog($"loading arena properties for room [{name}]");
-                foreach (string line in RegionProperties.RegionProperties.GenerateProperties(File.ReadAllLines(properties), self, storyIndex))
+                foreach (string line in RegionProperties.RegionProperties.GenerateProperties(File.ReadAllLines(properties), self, null, timelineIndex))
                 {
                     string[] array = Regex.Split(RWCustom.Custom.ValidateSpacedDelimiter(line, ":"), ": ");
                     if (array.Length < 2) { continue; }

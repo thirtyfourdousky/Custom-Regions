@@ -30,7 +30,7 @@ namespace CustomRegions.CustomWorld
             On.World.GetNode += World_GetNode;
             On.RoomPreprocessor.DecompressStringToAImaps += RoomPreprocessor_DecompressStringToAImaps;
             On.RoomPreprocessor.PreprocessRoom += RoomPreprocessor_PreprocessRoom;
-            On.RoomSettings.Load += RoomSettings_Load;
+            On.RoomSettings.Load_Timeline += RoomSettings_Load_Timeline;
             On.AIdataPreprocessor.CreatureDone += AIdataPreprocessor_CreatureDone;
             On.ModManager.ModMerger.WorldRoomSpawn.ctor += WorldRoomSpawn_ctor;
             On.ModManager.ModMerger.WorldDen.ctor += WorldDen_ctor;
@@ -58,10 +58,10 @@ namespace CustomRegions.CustomWorld
             }
         }
 
-        private static bool RoomSettings_Load(On.RoomSettings.orig_Load orig, RoomSettings self, SlugcatStats.Name playerChar)
+        private static bool RoomSettings_Load_Timeline(On.RoomSettings.orig_Load_Timeline orig, RoomSettings self, SlugcatStats.Timeline timelinePoint)
         {
             try { 
-                return orig(self, playerChar); 
+                return orig(self, timelinePoint); 
             }
             catch (Exception e) { CustomRegionsMod.CustomLog($"Error while loading settings from room [{self.name}]\n" + e.ToString()); throw; }
         }
