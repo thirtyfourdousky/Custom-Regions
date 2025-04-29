@@ -92,9 +92,8 @@ namespace CustomRegions.Arena
                 ))
             {
                 c.Emit(OpCodes.Ldarg_0);
-                c.Emit(OpCodes.Ldloc, 5);
-                c.Emit(OpCodes.Ldloc, 6);
-                c.EmitDelegate((bool orig, MirosBirdAbstractAI self, int i, int j) => { return orig && self.parent.world.GetAbstractRoom(self.parent.world.firstRoomIndex + i).creatures[j].state.alive; });
+                c.Emit(OpCodes.Ldloc, 7);
+                c.EmitDelegate((bool orig, MirosBirdAbstractAI self, AbstractCreature bird) => { return orig && bird.state.alive; });
             }
             else
             {
