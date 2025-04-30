@@ -1,19 +1,12 @@
-﻿using BepInEx.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using CustomRegions.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using static CustomRegions.CustomWorld.RegionPreprocessors;
 using static CustomRegions.Mod.Structs;
-using static IL.World;
 
 
 namespace CustomRegions.CustomWorld
@@ -98,7 +91,6 @@ namespace CustomRegions.CustomWorld
         public static void ApplyHooks()
         {
             On.WorldLoader.ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues += WorldLoader_ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues;
-            On.WorldLoader.CreatingWorld += WorldLoader_CreatingWorld;
             On.WorldLoader.GeneratePopulation += WorldLoader_GeneratePopulation;
             //On.RegionState.AdaptWorldToRegionState += RegionState_AdaptWorldToRegionState;
             //On.World.SimpleSpawner.ToString += SimpleSpawner_ToString;
@@ -212,11 +204,6 @@ namespace CustomRegions.CustomWorld
             orig(self, fresh);
         }
 
-        //this fixes a bunch of bugs introduced by 'dynamic' region room lists
-        private static void WorldLoader_CreatingWorld(On.WorldLoader.orig_CreatingWorld orig, WorldLoader self)
-        {
-            orig(self);
-        }
 
         private static void WorldLoader_ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues(On.WorldLoader.orig_ctor_RainWorldGame_Name_Timeline_bool_string_Region_SetupValues orig, WorldLoader self, RainWorldGame game, SlugcatStats.Name playerCharacter, SlugcatStats.Timeline timelinePosition, bool singleRoomWorld, string worldName, Region region, RainWorldGame.SetupValues setupValues)
         {
