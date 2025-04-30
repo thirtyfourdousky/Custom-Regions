@@ -1,15 +1,6 @@
-﻿using BepInEx;
-using CustomRegions.Mod;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Security.Policy;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static CustomRegions.Mod.Structs;
+using BepInEx;
 
 namespace CustomRegions.CustomWorld
 {
