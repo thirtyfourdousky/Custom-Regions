@@ -77,113 +77,52 @@ namespace CustomRegions.CustomWorld
 
         public static List<RegionPreprocessor> regionPreprocessors;
 
-        public static List<CustomCondition> customConditions;
-
         public delegate void RegionPreprocessor(RegionInfo info);
 
-        public delegate bool CustomCondition(string condition);
-
-        public static void CustomConditionsProcessing(RegionInfo info)
+        public static bool? MSCCondition(string condition, RainWorldGame _)
         {
-            for (int i = 0; i < info.Lines.Count; i++)
-            {
-                if (info.Lines[i].IsNullOrWhiteSpace()) continue;
-                if (info.Lines[i][0] == '{')
-                {
-                    bool remove = false;
-                    string[] split = info.Lines[i].Substring(1, info.Lines[i].IndexOf("}") - 1).Split(',');
-                    foreach (string str in split)
-                    {
-                        foreach (CustomCondition condition in customConditions)
-                        {
-                            if (condition(str) == false)
-                            {
-                                remove = true;
-                                break;
-                            }
-                        }
-                        if (remove)
-                        { break; }
-                    }
-                    if (remove)
-                    { info.Lines[i] = "//"; }
-
-                    else
-                    {
-                        info.Lines[i] = info.Lines[i].Substring(info.Lines[i].IndexOf("}") + 1);
-                    }
-                }
-            }
-
-            info.Lines.RemoveAll(str => str == "//");
+            if (condition != "MSC") return null;
+            return ModManager.MSC;
         }
 
-        public static bool MSCCondition(string condition)
+        public static bool? RegionExistsCondition(string condition, RainWorldGame _)
         {
-            bool notInverted = true;
-            if (condition.Contains('!'))
+            if (condition.StartsWith("region:") && condition.Length > "region:".Length)
             {
-                notInverted = false;
-                condition = condition.Replace("!", "");
+                return Region.GetFullRegionOrder().Contains(condition.Substring("region:".Length));
             }
 
-            if (condition != "MSC") return true;
-            return ModManager.MSC == notInverted;
-        }
-
-        public static bool RegionExistsCondition(string condition)
-        {
-            bool notInverted = true;
-            if (condition.Contains('!'))
-            {
-                notInverted = false;
-                condition = condition.Replace("!", "");
-            }
-
-            if (condition.Count() != 2) return true;
-            return Region.GetFullRegionOrder().Contains(condition) == notInverted;
+            if (condition.Count() != 2) return null;
+            return Region.GetFullRegionOrder().Contains(condition);
         }
 
 
-        public static bool ModIDCondition(string condition)
+        public static bool? ModIDCondition(string condition, RainWorldGame _)
         {
-            bool notInverted = true;
-            if (condition.Contains('!'))
-            {
-                notInverted = false;
-                condition = condition.Replace("!", "");
-            }
-
-            if (condition[0] != '#') return true;
+            if (condition[0] != '#') return null;
             condition = condition.Substring(1);
-
-            bool modIDExists = false;
 
             foreach (ModManager.Mod mod in ModManager.ActiveMods)
             {
                 if (mod.id == condition)
                 {
-                    modIDExists = true;
-                    break;
+                    return true;
                 }
             }
 
-            return modIDExists == notInverted;
+            return false;
         }
 
         public static void InitializeBuiltinPreprocessors()
         {
             regionPreprocessors = new List<RegionPreprocessor>();
-            customConditions = new List<CustomCondition>();
-
-            regionPreprocessors.Add(CustomConditionsProcessing);
 
             regionPreprocessors.Add(ReplaceRoomPreprocessor.ReplaceRoom);
             regionPreprocessors.Add(IndexedEntranceClass.IndexedEntrance);
 
-            customConditions.Add(MSCCondition);
-            customConditions.Add(RegionExistsCondition);
-            customConditions.Add(ModIDCondition);
+            WorldLoader.Preprocessing.preprocessorConditions.Add(MSCCondition);
+            WorldLoader.Preprocessing.preprocessorConditions.Add(ModIDCondition);
+            WorldLoader.Preprocessing.preprocessorConditions.Add(RegionExistsCondition); //this should be last to avoid any false detections
         }
     }
 }

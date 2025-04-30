@@ -15,18 +15,12 @@ namespace CustomRegions.RegionProperties
     {
         public static void ApplyHooks()
         {
-            On.HUD.Map.ctor += Map_ctor;
             On.RoomRain.ThrowAroundObjects += RoomRain_ThrowAroundObjects;
             On.WormGrass.ctor += WormGrass_ctor;
 
             var bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             new Hook(typeof(RainCycle).GetProperty(nameof(RainCycle.MusicAllowed), bindingFlags).GetGetMethod(), RainCycle_MusicAllowed);
-            new Hook(typeof(RainCycle).GetProperty(nameof(RainCycle.RegionHidesTimer), bindingFlags).GetGetMethod(), RainCycle_RegionHidesTimer);
-            On.HUD.RainMeter.ctor += RainMeter_ctor;
-            On.HUD.RainMeter.Draw += RainMeter_Draw;
-            On.HUD.RainMeter.Update += RainMeter_Update;
             On.RainCycle.GetDesiredCycleLength += RainCycle_GetDesiredCycleLength;
-            On.OverseerAbstractAI.ctor += OverseerAbstractAI_ctor;
             IL.RainCycle.ctor += RainCycle_ctor;
             On.RainCycle.Update += RainCycle_Update;
         }
@@ -88,15 +82,6 @@ namespace CustomRegions.RegionProperties
             }
         }
 
-        private static void OverseerAbstractAI_ctor(On.OverseerAbstractAI.orig_ctor orig, OverseerAbstractAI self, World world, AbstractCreature parent)
-        {
-            orig(self, world, parent);
-            if (self.world.region?.GetCRSProperties().hideTimer is bool b && b)
-            {
-                self.parent.ignoreCycle = b;
-            }
-        }
-
         private static int RainCycle_GetDesiredCycleLength(On.RainCycle.orig_GetDesiredCycleLength orig, RainCycle self)
         {
             int result = orig(self);
@@ -140,40 +125,6 @@ namespace CustomRegions.RegionProperties
         }
 
         public static CRSProperties GetCRSProperties(this HUD.HUD hud) => (hud.owner as Player)?.abstractCreature.world.region?.GetCRSProperties();
-
-        private static void RainMeter_Update(On.HUD.RainMeter.orig_Update orig, HUD.RainMeter self)
-        {
-            orig(self);
-            if (self.halfTimeShown && self.hud.GetCRSProperties()?.hideTimer is bool b && !b)
-            {
-                self.halfTimeShown = (self.hud.owner as Player).room.world.rainCycle.AmountLeft < 0.5f;
-            }
-        }
-
-        private static void RainMeter_Draw(On.HUD.RainMeter.orig_Draw orig, HUD.RainMeter self, float timeStacker)
-        {
-            orig(self, timeStacker);
-
-            if (self.hud.GetCRSProperties()?.hideTimer is bool b && !b)
-                foreach (HUD.HUDCircle circle in self.circles)
-                    circle.Draw(timeStacker);
-        }
-
-        private static void RainMeter_ctor(On.HUD.RainMeter.orig_ctor orig, HUD.RainMeter self, HUD.HUD hud, FContainer fContainer)
-        {
-            orig(self, hud, fContainer);
-            if (self.halfTimeShown && self.hud.GetCRSProperties()?.hideTimer is bool b && !b)
-            {
-                self.halfTimeShown = false;
-            }
-        }
-
-        private static bool RainCycle_RegionHidesTimer(Func<RainCycle, bool> orig, RainCycle self)
-        {
-            if (self.world.region?.GetCRSProperties().hideTimer is bool b)
-                return b;
-            return orig(self);
-        }
 
         private static bool RainCycle_MusicAllowed(Func<RainCycle, bool> orig, RainCycle self)
         {

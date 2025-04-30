@@ -19,9 +19,10 @@ namespace CustomRegions.RegionProperties
 
         public class CRSProperties
         {
+            Region region;
             public CRSProperties(Region region)
             {
-                CustomRegionsMod.CustomLog("CRSproperties");
+                this.region = region;
                 var properties = region.regionParams.GetRawProperties().CustomProperties;
                 foreach (string key in properties.Keys)
                 {
@@ -36,7 +37,6 @@ namespace CustomRegions.RegionProperties
                     switch (key)
                     {
                         case nameof(musicAfterCycle): musicAfterCycle = value.ToLower() == "true"; break;
-                        case nameof(hideTimer): hideTimer = value.ToLower() == "true"; break;
                         case nameof(wormGrassLight): wormGrassLight = value.ToLower() == "true"; break;
                         case nameof(postCycleMusic): postCycleMusic = value.ToLower() == "true"; break;
                         case nameof(hideVoidSpawn): hideVoidSpawn = value.ToLower() == "true"; break;
@@ -75,14 +75,15 @@ namespace CustomRegions.RegionProperties
                             fireflyColor = new(color2.x, color2.y, color2.z); break;
 
                         case nameof(mapDefaultMatLayers):
-                            mapDefaultMatLayers = new bool[3];
+                            CustomRegionsMod.CustomLog($"[WARNING] [{region.name}] mapDefaultMatLayers property is obsolete! Use \"mapSkyLayers\" instead.");
+                            region.regionParams.mapSkyLayers = new bool[3];
                             string[] array = value.Split(',').Select(x => x.Trim()).ToArray();
                             foreach (string s in array)
                             {
                                 var number = int.Parse(s);
                                 if (0 <= number && number <= 2)
                                 {
-                                    mapDefaultMatLayers[number] = true;
+                                    region.regionParams.mapSkyLayers[number] = true;
                                 }
                             }
                             break;
@@ -144,8 +145,6 @@ namespace CustomRegions.RegionProperties
             }
 
             public bool? musicAfterCycle;
-
-            public bool? hideTimer;
 
             public float? cycleLength;
 
@@ -319,7 +318,7 @@ namespace CustomRegions.RegionProperties
             }
 
             string[] array2 = Regex.Split(parentName, "-");
-            SlugcatStats.Name parentSlug = array2.Length >= 2 ? new(array2[1]) : null;
+            SlugcatStats.Timeline parentSlug = array2.Length >= 2 ? new(array2[1]) : null;
             CustomRegionsMod.CustomLog($"region [{self.name}] is loading parent [{array2[0]}] for slug [{parentSlug}]");
             Region parent = new(array2[0], 0, RegionParentID, parentSlug);
 
