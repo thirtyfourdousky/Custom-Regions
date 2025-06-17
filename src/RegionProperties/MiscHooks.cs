@@ -1,8 +1,8 @@
-﻿using CustomRegions.Mod;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
+using CustomRegions.Mod;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace CustomRegions.RegionProperties
@@ -28,6 +28,25 @@ internal static class MiscHooks
             On.SSLightRod.UpdateLightAmount += SSLightRod_UpdateLightAmount;
 
             On.SuperStructureFuses.ctor += SuperStructureFuses_ctor;
+
+            On.Room.Loaded += Room_Loaded1;
+        }
+
+        private static void Room_Loaded1(On.Room.orig_Loaded orig, Room self)
+        {
+            // Set cloud direction. Check for RegionKit effect so we don't overwrite it
+            if (self.game != null && self.roomSettings != null && !self.roomSettings.effects.Any(x => x.type.ToString().ToLowerInvariant() == "clouddirection"))
+            {
+                if (self.world.region?.GetCRSProperties().cloudDirection is float f)
+                {
+                    Shader.SetGlobalFloat(RainWorld.ShadPropWindDir, f);
+                }
+                else
+                {
+                    Shader.SetGlobalFloat(RainWorld.ShadPropWindDir, ModManager.MSC ? (-1f) : 1f); // this feels like a bad idea but oh well
+                }
+            }
+            orig(self);
         }
 
         private static void SuperStructureFuses_ctor(On.SuperStructureFuses.orig_ctor orig, SuperStructureFuses self, PlacedObject placedObject, RWCustom.IntRect rect, Room room)
@@ -317,5 +336,6 @@ internal static class MiscHooks
             }
         }
         #endregion
+
     }
 }

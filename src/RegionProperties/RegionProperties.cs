@@ -32,14 +32,15 @@ namespace CustomRegions.RegionProperties
 
             public void ParseCustomProperty(string key, string value)
             {
+                CustomRegionsMod.BepLog(key + ": " + value);
                 try
                 {
                     switch (key)
                     {
-                        case nameof(musicAfterCycle): musicAfterCycle = value.ToLower() == "true"; break;
-                        case nameof(wormGrassLight): wormGrassLight = value.ToLower() == "true"; break;
-                        case nameof(postCycleMusic): postCycleMusic = value.ToLower() == "true"; break;
-                        case nameof(hideVoidSpawn): hideVoidSpawn = value.ToLower() == "true"; break;
+                        case nameof(musicAfterCycle): musicAfterCycle = value.ToLowerInvariant() == "true"; break;
+                        case nameof(wormGrassLight): wormGrassLight = value.ToLowerInvariant() == "true"; break;
+                        case nameof(postCycleMusic): postCycleMusic = value.ToLowerInvariant() == "true"; break;
+                        case nameof(hideVoidSpawn): hideVoidSpawn = value.ToLowerInvariant() == "true"; break;
                         case nameof(voidSpawnTarget): voidSpawnTarget = value; break;
                         case nameof(sundownMusic): sundownMusic = value; break;
                         case nameof(cycleLength): cycleLength = float.Parse(value); break;
@@ -88,11 +89,13 @@ namespace CustomRegions.RegionProperties
                             }
                             break;
 
-                        case nameof(invPainJumps): invPainJumps = value == "True"; break;
-                        case nameof(invExplosiveSnails): invExplosiveSnails = value == "True"; break;
+                        case nameof(invPainJumps): invPainJumps = value.ToLowerInvariant() == "true"; break;
+                        case nameof(invExplosiveSnails): invExplosiveSnails = value.ToLowerInvariant() == "true"; break;
                         case nameof(invWormgrassSpam): invWormgrassSpam = float.Parse(value); break;
                         case nameof(invGrimeSpam): invGrimeSpam = float.Parse(value); break;
                         case nameof(invBlackFade): invBlackFade = float.Parse(value); break;
+
+                        case nameof(cloudDirection): cloudDirection = float.Parse(value); break;
                     }
                 }
                 catch (Exception e) { CustomRegionsMod.CustomLog($"[ERROR] failed to parse property [{key}: {value}]\n{e}", true); }
@@ -206,6 +209,7 @@ namespace CustomRegions.RegionProperties
             public float? invGrimeSpam; //VS gimmic
             public float? invBlackFade; //SB gimmick
 
+            public float? cloudDirection;
         }
 
         private static ConditionalWeakTable<Region.RegionParams, RawProperties> _RawProperties = new();
@@ -214,7 +218,7 @@ namespace CustomRegions.RegionProperties
 
         public static void ApplyHooks()
         {
-            IL.Region.ctor_string_int_int_Timeline += Region_ctor;
+            IL.Region.ctor_string_int_int_RainWorldGame_Timeline += Region_ctor;
             IL.World.LoadMapConfig_Timeline += World_LoadMapConfig;
         }
 
