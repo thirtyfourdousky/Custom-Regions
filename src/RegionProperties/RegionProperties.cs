@@ -45,7 +45,7 @@ namespace CustomRegions.RegionProperties
                         case nameof(cycleLength): cycleLength = float.Parse(value); break;
                         case nameof(rivStormyCycleLength): rivStormyCycleLength = float.Parse(value); break;
                         case nameof(rivStormyPreCycleChance): rivStormyPreCycleChance = float.Parse(value); break;
-                        case nameof(forcePreCycleChance): rivStormyPreCycleChance = float.Parse(value); break;
+                        case nameof(forcePreCycleChance): forcePreCycleChance = float.Parse(value); break;
                         case nameof(throwObjectsThreshold): throwObjectsThreshold = float.Parse(value); break;
                         case nameof(superStructureFusesBroken): superStructureFusesBroken = float.Parse(value); break;
                         case nameof(minScavSquad): minScavSquad = int.Parse(value); break;
@@ -214,7 +214,7 @@ namespace CustomRegions.RegionProperties
 
         public static void ApplyHooks()
         {
-            IL.Region.ctor_string_int_int_Timeline += Region_ctor;
+            IL.Region.ctor_string_int_int_RainWorldGame_Timeline += Region_ctor;
             IL.World.LoadMapConfig_Timeline += World_LoadMapConfig;
         }
 
@@ -227,6 +227,8 @@ namespace CustomRegions.RegionProperties
                 c.Emit(OpCodes.Ldarg_0);
                 c.Emit(OpCodes.Ldfld, typeof(World).GetField("region"));
                 c.Emit(OpCodes.Ldnull);
+                c.Emit(OpCodes.Ldarg, 0);
+                c.Emit<World>(OpCodes.Callvirt, "get_game");
                 c.Emit(OpCodes.Ldarg, 1);
                 c.EmitDelegate(GenerateProperties);
             }
@@ -246,6 +248,7 @@ namespace CustomRegions.RegionProperties
                 c.Emit(OpCodes.Ldarg_0);
                 c.Emit(OpCodes.Ldnull);
                 c.Emit(OpCodes.Ldarg, 4);
+                c.Emit(OpCodes.Ldarg, 5);
                 c.EmitDelegate(GenerateProperties);
             }
             else
@@ -254,12 +257,12 @@ namespace CustomRegions.RegionProperties
             }
         }
 
-        public static string[] GenerateProperties(string[] lines, Region self, SlugcatStats.Name slug, SlugcatStats.Timeline timeline)
+        public static string[] GenerateProperties(string[] lines, Region self, SlugcatStats.Name slug, RainWorldGame game, SlugcatStats.Timeline timeline)
         {
             try
             {
                 RawProperties p = self.regionParams.GetRawProperties();
-                foreach (string line in PreprocessProperties(lines, self, slug, timeline))
+                foreach (string line in PreprocessProperties(lines, self, slug, game, timeline))
                 {
                     if (line.IsNullOrWhiteSpace()) continue;
 
@@ -269,7 +272,7 @@ namespace CustomRegions.RegionProperties
 
                 if (p.parent != null)
                 {
-                    p.InheritFromParent(GetParentProperties(self, p.parent));
+                    p.InheritFromParent(GetParentProperties(self, game, p.parent));
                     CustomRegionsMod.CustomLog($"[{self.name}] properties inheriting from parent [{p.parent}]");
                     CustomRegionsMod.CustomLog(string.Join("\n", p.AllProperties), false, CustomRegionsMod.DebugLevel.FULL);
                 }
@@ -283,12 +286,19 @@ namespace CustomRegions.RegionProperties
             }
         }
 
-        public static string[] PreprocessProperties(string[] lines, Region self, SlugcatStats.Name slug, SlugcatStats.Timeline timeline)
+        public static string[] PreprocessProperties(string[] lines, Region self, SlugcatStats.Name slug, RainWorldGame game, SlugcatStats.Timeline timeline)
         {
+            List<string> list = new();
+
+            foreach (string line in lines)
+            {
+                string preprocessed = WorldLoader.Preprocessing.PreprocessLine(line, game, timeline);
+                if (preprocessed != null) list.Add(preprocessed);
+            }
             RegionInfo regionInfo = new()
             {
                 RegionID = self.name,
-                Lines = lines.ToList(),
+                Lines = list,
                 playerCharacter = slug,
                 timeline = timeline
                 
@@ -306,7 +316,7 @@ namespace CustomRegions.RegionProperties
             return Utils.ProcessSlugcatConditions(regionInfo.Lines, slug ?? (timeline != null ? new(timeline.value, false) : null)).ToArray();
         }
 
-        public static RawProperties GetParentProperties(Region self, string parentName)
+        public static RawProperties GetParentProperties(Region self, RainWorldGame game, string parentName)
         {
             if (self.regionNumber != RegionParentID) RecursionStopper = 0;
             else RecursionStopper++;
@@ -320,7 +330,7 @@ namespace CustomRegions.RegionProperties
             string[] array2 = Regex.Split(parentName, "-");
             SlugcatStats.Timeline parentSlug = array2.Length >= 2 ? new(array2[1]) : null;
             CustomRegionsMod.CustomLog($"region [{self.name}] is loading parent [{array2[0]}] for slug [{parentSlug}]");
-            Region parent = new(array2[0], 0, RegionParentID, parentSlug);
+            Region parent = new(array2[0], 0, RegionParentID, game, parentSlug);
 
             return parent.regionParams.GetRawProperties();
         }

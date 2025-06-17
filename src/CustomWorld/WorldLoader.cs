@@ -94,62 +94,7 @@ namespace CustomRegions.CustomWorld
             On.WorldLoader.GeneratePopulation += WorldLoader_GeneratePopulation;
             //On.RegionState.AdaptWorldToRegionState += RegionState_AdaptWorldToRegionState;
             //On.World.SimpleSpawner.ToString += SimpleSpawner_ToString;
-            On.WorldLoader.Preprocessing.PreprocessLine += Preprocessing_PreprocessLine;
-            On.WorldLoader.Preprocessing.PreprocessCustomConditions += Preprocessing_PreprocessCustomConditions;
         }
-
-        private static bool Preprocessing_PreprocessCustomConditions(On.WorldLoader.Preprocessing.orig_PreprocessCustomConditions orig, string text, RainWorldGame game)
-        {
-            //move inverted bool out of the foreach through preprocessors
-            string[] array = text.Split( ',' );
-            for (int i = 0; i < array.Length; i++)
-            {
-                string condition = array[i];
-
-                bool inverted = false;
-                if (condition.Contains('!'))
-                {
-                    inverted = true;
-                    condition = condition.Replace("!", "");
-                }
-                foreach (WorldLoader.Preprocessing.PreprocessorCondition preprocessorCondition in WorldLoader.Preprocessing.preprocessorConditions)
-                {
-                    bool? result = preprocessorCondition(condition, game);
-                    if (result != null && result == inverted)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        private static string Preprocessing_PreprocessLine(On.WorldLoader.Preprocessing.orig_PreprocessLine orig, string line, RainWorldGame game, SlugcatStats.Timeline timelinePosition)
-        {
-            //swap the order slugcat conditionals and custom conditionals are evaluated - too complex for an il hook
-            if (line.Length < 2 || line.Substring(0, 2) == "//")
-            {
-                return null;
-            }
-            if (line[0] == '(' && line.Contains(')'))
-            {
-                if (!WorldLoader.Preprocessing.TimelineMatch(line.Substring(1, line.IndexOf(")") - 1), timelinePosition))
-                {
-                    return null;
-                }
-                line = line.Substring(line.IndexOf(")") + 1);
-            }
-            if (line[0] == '{' && line.Contains('}'))
-            {
-                if (!WorldLoader.Preprocessing.PreprocessCustomConditions(line.Substring(1, line.IndexOf("}") - 1), game))
-                {
-                    return null;
-                }
-                line = line.Substring(line.IndexOf("}") + 1);
-            }
-            return line;
-        }
-
         private static string SimpleSpawner_ToString(On.World.SimpleSpawner.orig_ToString orig, World.SimpleSpawner self)
         {
             return orig(self) + " " + self.creatureType.ToString();
