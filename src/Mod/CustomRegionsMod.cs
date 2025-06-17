@@ -21,7 +21,7 @@ namespace CustomRegions.Mod
     {
         public const string PLUGIN_ID = "com.rainworldgame.garrakx.crs.mod";
         public const string PLUGIN_NAME = "Custom Regions Support";
-        public const string PLUGIN_VERSION = "0.10.5.5";
+        public const string PLUGIN_VERSION = "0.10.5.6";
         public const string JSON_ID = "crs";
 
          
@@ -46,7 +46,6 @@ namespace CustomRegions.Mod
 
             try {
                 IndexedEntranceClass.Apply();
-                ReplaceRoomPreprocessor.Apply();
                 Debugging.ApplyHooks();
                 CustomMenu.RegionLandscapes.ApplyHooks();
                 Arena.ChallengeMenu.ApplyHooks();
@@ -86,7 +85,6 @@ namespace CustomRegions.Mod
                 if (init) return;
                 init = true;
                 CreateCustomWorldLog();
-                LoadDebugLevel();
                 RegionPreprocessors.InitializeBuiltinPreprocessors();
                 CustomLog("Mod is Initialized.");
             }
@@ -133,7 +131,7 @@ namespace CustomRegions.Mod
         public static void CustomLog(string logText)
         {
             if (!File.Exists(Custom.RootFolderDirectory() + Path.DirectorySeparatorChar + logFileName)) {
-                CreateCustomWorldLog();
+                 CreateCustomWorldLog();
             }
 
             if (debugLevel == DebugLevel.NONE) return;
@@ -175,6 +173,7 @@ namespace CustomRegions.Mod
 
         private static void CreateCustomWorldLog()
         {
+            LoadDebugLevel();
             using (StreamWriter sw = File.CreateText(Custom.RootFolderDirectory() + Path.DirectorySeparatorChar.ToString() + logFileName)) {
                 sw.WriteLine($"############################################\n Custom World Log {versionCR} [DEBUG LEVEL: {debugLevel}]\n {DateTime.UtcNow:MM/dd/yyyy HH:mm:ss}\n");
                 if (debugLevel == DebugLevel.NONE) sw.WriteLine($"CRSLog is disabled! It can be re-enabled in the Remix menu");
@@ -202,6 +201,7 @@ namespace CustomRegions.Mod
 
         public static void SetDebugFromRemix()
         {
+            BepLog("debug level is " + RemixMenu.DebugLevel.Value);
             debugLevel = RemixMenu.DebugLevel.Value;
         }
 

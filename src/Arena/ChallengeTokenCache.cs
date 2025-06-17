@@ -42,8 +42,11 @@ namespace CustomRegions.Arena
         {
             if (ChallengeData.customChallenges.Count == 0 && Collectables.ArenaUnlocks.customLevelUnlocks.Count == 0)
             {
-                ChallengeData.Refresh();
-                Collectables.ArenaUnlocks.RefreshArenaUnlocks();
+                lock (ChallengeData.customChallenges)
+                { ChallengeData.Refresh(); }
+
+                lock (Collectables.ArenaUnlocks.customLevelUnlocks)
+                { Collectables.ArenaUnlocks.RefreshArenaUnlocks(); }
             }
             orig(self, modded, region);
         }

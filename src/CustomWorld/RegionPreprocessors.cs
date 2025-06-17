@@ -117,7 +117,6 @@ namespace CustomRegions.CustomWorld
         {
             regionPreprocessors = new List<RegionPreprocessor>();
 
-            regionPreprocessors.Add(ReplaceRoomPreprocessor.ReplaceRoom);
             regionPreprocessors.Add(IndexedEntranceClass.IndexedEntrance);
 
             WorldLoader.Preprocessing.preprocessorConditions.Add(MSCCondition);

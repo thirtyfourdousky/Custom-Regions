@@ -13,7 +13,7 @@ namespace CustomRegions.Arena
         public static void ApplyHooks()
         {
             On.OverWorld.LoadWorld_string_Name_Timeline_bool += OverWorld_LoadWorld_string_Name_Timeline_bool;
-            On.Region.ctor_string_int_int_Timeline += Region_ctor_string_int_int_Timeline;
+            On.Region.ctor_string_int_int_RainWorldGame_Timeline += Region_ctor_string_int_int_Timeline;
             IL.Menu.MultiplayerMenu.ctor += MultiplayerMenu_ctor;
         }
 
@@ -45,14 +45,14 @@ namespace CustomRegions.Arena
                 string text = WorldLoader.FindRoomFile(self.activeWorld.GetAbstractRoom(0).name, false, "_Properties.txt");
                 if (File.Exists(text))
                 {
-                    self.activeWorld.region = new Region(self.activeWorld.GetAbstractRoom(0).name, 0, -1, timelineIndex: null);
+                    self.activeWorld.region = new Region(self.activeWorld.GetAbstractRoom(0).name, 0, -1, self.game, timelineIndex: null);
                 }
             }
         }
 
-        private static void Region_ctor_string_int_int_Timeline(On.Region.orig_ctor_string_int_int_Timeline orig, Region self, string name, int firstRoomIndex, int regionNumber, SlugcatStats.Timeline timelineIndex)
+        private static void Region_ctor_string_int_int_Timeline(On.Region.orig_ctor_string_int_int_RainWorldGame_Timeline orig, Region self, string name, int firstRoomIndex, int regionNumber, RainWorldGame game, SlugcatStats.Timeline timelineIndex)
         {
-            orig(self, name, firstRoomIndex, regionNumber, timelineIndex);
+            orig(self, name, firstRoomIndex, regionNumber, game, timelineIndex);
 
             try
             {
@@ -62,7 +62,7 @@ namespace CustomRegions.Arena
                 if (!File.Exists(properties)) return;
 
                 CustomRegionsMod.CustomLog($"loading arena properties for room [{name}]");
-                foreach (string line in RegionProperties.RegionProperties.GenerateProperties(File.ReadAllLines(properties), self, null, timelineIndex))
+                foreach (string line in RegionProperties.RegionProperties.GenerateProperties(File.ReadAllLines(properties), self, null, game, timelineIndex))
                 {
                     string[] array = Regex.Split(RWCustom.Custom.ValidateSpacedDelimiter(line, ":"), ": ");
                     if (array.Length < 2) { continue; }
