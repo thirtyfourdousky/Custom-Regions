@@ -19,7 +19,7 @@ namespace CustomRegions.RegionProperties
 
         public class CRSProperties
         {
-            Region region;
+            readonly Region region;
             public CRSProperties(Region region)
             {
                 this.region = region;
@@ -220,6 +220,24 @@ namespace CustomRegions.RegionProperties
         {
             IL.Region.ctor_string_int_int_RainWorldGame_Timeline += Region_ctor;
             IL.World.LoadMapConfig_Timeline += World_LoadMapConfig;
+            On.Region.IsWatcherVanillaRegion += Region_IsWatcherVanillaRegion;
+            On.Region.IsVanillaSentientRotRegion += Region_IsVanillaSentientRotRegion;
+            On.Region.HasSentientRotResistance += Region_HasSentientRotResistance;
+        }
+
+        private static bool Region_HasSentientRotResistance(On.Region.orig_HasSentientRotResistance orig, string name)
+        {
+            return orig(name) || CustomStaticCache.WatcherRotImmuneRegions.Contains(name.ToLowerInvariant());
+        }
+
+        private static bool Region_IsVanillaSentientRotRegion(On.Region.orig_IsVanillaSentientRotRegion orig, string name)
+        {
+            return orig(name) || CustomStaticCache.WatcherSentientRotRegions.Contains(name.ToLowerInvariant());
+        }
+
+        private static bool Region_IsWatcherVanillaRegion(On.Region.orig_IsWatcherVanillaRegion orig, string name)
+        {
+            return orig(name) || CustomStaticCache.WatcherVanillaRegions.Contains(name.ToLowerInvariant());
         }
 
         private static void World_LoadMapConfig(ILContext il)

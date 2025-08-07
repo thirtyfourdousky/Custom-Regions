@@ -1,22 +1,24 @@
-﻿using CustomRegions.Progression;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using CustomRegions.Progression;
 
 namespace CustomRegions.Mod
 {
     internal static class CustomStaticCache
-{
+    {
 
         public static Dictionary<SlugcatStats.Name, List<string>> CustomStoryRegions = new();
 
         public static Dictionary<SlugcatStats.Name, List<string>> CustomOptionalRegions = new();
 
         public static List<string> SafariRegions = new();
+
+        public static HashSet<string> WatcherVanillaRegions = new();
+        public static HashSet<string> WatcherSentientRotRegions = new();
+        public static HashSet<string> WatcherRotImmuneRegions = new();
 
         static List<string> currentRegionOrder = new();
 
@@ -35,7 +37,7 @@ namespace CustomRegions.Mod
                 }
                 catch (Exception e) { forceRefresh = true; CustomRegionsMod.CustomLog($"Exception while refreshing!\n{e}"); }
             }
-             
+
             if (forceRefresh)
             {
                 Refresh();
@@ -48,7 +50,7 @@ namespace CustomRegions.Mod
 
             currentRegionOrder = Region.GetFullRegionOrder();
             currentSlugcats = ExtEnumBase.GetNames(typeof(SlugcatStats.Name)).ToList();
-            try { RegenerateLists(); } catch(Exception e) { CustomRegionsMod.CustomLog("Failed to regenerate story lists\n" + e, true); }
+            try { RegenerateLists(); } catch (Exception e) { CustomRegionsMod.CustomLog("Failed to regenerate story lists\n" + e, true); }
             SafariEnums.Refresh();
             CustomMenu.RegionLandscapes.RefreshLandscapes();
         }
@@ -60,6 +62,9 @@ namespace CustomRegions.Mod
             CustomStoryRegions = new Dictionary<SlugcatStats.Name, List<string>>();
             CustomOptionalRegions = new Dictionary<SlugcatStats.Name, List<string>>();
             SafariRegions = new List<string>();
+            WatcherVanillaRegions.Clear();
+            WatcherSentientRotRegions.Clear();
+            WatcherRotImmuneRegions.Clear();
 
             foreach (string slugString in SlugcatStats.Name.values.entries)
             {
@@ -88,7 +93,7 @@ namespace CustomRegions.Mod
                 {
                     if (line.ToLower().Trim() == "safari")
                     {
-                        CustomRegionsMod.CustomLog("safari unlock for this region", false, CustomRegionsMod.DebugLevel.FULL);
+                        CustomRegionsMod.CustomLog("Safari unlock for this region", false, CustomRegionsMod.DebugLevel.FULL);
                         SafariRegions.Add(regionName);
                         continue;
                     }
@@ -117,6 +122,24 @@ namespace CustomRegions.Mod
                         }
                     }
 
+                    else if (line.ToLower().Trim() == "watcherprologue")
+                    {
+                        CustomRegionsMod.CustomLog($"{regionName} is Watcher prologue region", false, CustomRegionsMod.DebugLevel.FULL);
+                        WatcherVanillaRegions.Add(regionName.ToLowerInvariant());
+                    }
+
+                    else if (line.ToLower().Trim() == "watchersentientrot")
+                    {
+                        CustomRegionsMod.CustomLog($"{regionName} is Watcher sentient rot region", false, CustomRegionsMod.DebugLevel.FULL);
+                        WatcherSentientRotRegions.Add(regionName.ToLowerInvariant());
+                    }
+
+                    else if (line.ToLower().Trim() == "watcherrotimmune")
+                    {
+                        CustomRegionsMod.CustomLog($"{regionName} is Watcher sentient rot immune region", false, CustomRegionsMod.DebugLevel.FULL);
+                        WatcherRotImmuneRegions.Add(regionName.ToLowerInvariant());
+                    }
+
                     bool inverted = false;
                     string[] array = Regex.Split(line, " : ");
 
@@ -141,7 +164,7 @@ namespace CustomRegions.Mod
                             SlugcatStats.Name slugName = new(slugString, false);
 
                             if (!CustomStoryRegions.ContainsKey(slugName))
-                            { 
+                            {
                                 CustomStoryRegions[slugName] = new();
                                 CustomOptionalRegions[slugName] = new();
                             }
