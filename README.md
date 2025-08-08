@@ -385,10 +385,10 @@ and the 2nd line happen if MSC is not active
 Conditions can be stacked, like so  
 
     //this line happens if AR is a region but TR isn't
-    {AR,!TR} 
+    {region:AR,!region:TR} 
     
     //this line happens if MSC isn't active and PC is a region
-    {!MSC,PC} 
+    {!MSC,region:PC} 
     
     //# is used as the first character to mark it as an id
     {#!lb-fgf-m4r-ik.coral-reef} 
@@ -405,6 +405,8 @@ Conditions can be stacked, like so
 Due to a bug, any time conditionals are used in the rooms section they should be at the bottom, otherwise items and creatures may start to disappear from shelters.
 
 ## <a name="REPLACE"></a>ReplaceRoom
+
+**NOTICE: this feature was integrated into the game in version v1.10.3; the tutorial will be left here regardless.**
 
 A new conditional link can be used to replace the room files for a particular room for a specific slugcat.
 
