@@ -72,6 +72,7 @@ namespace CustomRegions.Mod
                 RegionProperties.ScavengerHooks.ApplyHooks();
                 RegionProperties.MiscHooks.ApplyHooks();
                 RegionProperties.InvHooks.ApplyHooks();
+                RegionProperties.WatcherHooks.ApplyHooks();
             } catch (Exception ex) {
                 BepLogError("Error while applying Hooks: " + ex.ToString());
             }
