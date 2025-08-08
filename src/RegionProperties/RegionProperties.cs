@@ -96,6 +96,8 @@ namespace CustomRegions.RegionProperties
                         case nameof(invBlackFade): invBlackFade = float.Parse(value); break;
 
                         case nameof(cloudDirection): cloudDirection = float.Parse(value); break;
+
+                        case nameof(watcherSentientRotRooms): watcherSentientRotRooms = Regex.Split(value.Trim(), ", ").ToList(); break;
                     }
                 }
                 catch (Exception e) { CustomRegionsMod.CustomLog($"[ERROR] failed to parse property [{key}: {value}]\n{e}", true); }
@@ -210,6 +212,8 @@ namespace CustomRegions.RegionProperties
             public float? invBlackFade; //SB gimmick
 
             public float? cloudDirection;
+
+            public List<string> watcherSentientRotRooms = new();
         }
 
         private static ConditionalWeakTable<Region.RegionParams, RawProperties> _RawProperties = new();
@@ -220,9 +224,21 @@ namespace CustomRegions.RegionProperties
         {
             IL.Region.ctor_string_int_int_RainWorldGame_Timeline += Region_ctor;
             IL.World.LoadMapConfig_Timeline += World_LoadMapConfig;
+
             On.Region.IsWatcherVanillaRegion += Region_IsWatcherVanillaRegion;
             On.Region.IsVanillaSentientRotRegion += Region_IsVanillaSentientRotRegion;
             On.Region.HasSentientRotResistance += Region_HasSentientRotResistance;
+            On.Watcher.WatcherRoomSpecificScript.AddRoomSpecificScript += WatcherRoomSpecificScript_AddRoomSpecificScript;
+        }
+
+        private static void WatcherRoomSpecificScript_AddRoomSpecificScript(On.Watcher.WatcherRoomSpecificScript.orig_AddRoomSpecificScript orig, Room room)
+        {
+            orig(room);
+            var props = room.world?.region?.GetCRSProperties();
+            if (props != null && room.abstractRoom.firstTimeRealized && props.watcherSentientRotRooms.Contains(room.abstractRoom.name))
+            {
+                room.AddObject(new Watcher.WatcherRoomSpecificScript.InfectSentientRot(room));
+            }
         }
 
         private static bool Region_HasSentientRotResistance(On.Region.orig_HasSentientRotResistance orig, string name)
