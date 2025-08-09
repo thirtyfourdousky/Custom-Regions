@@ -360,8 +360,7 @@ Same goes for optional regions.
 Safari can't have slugcat conditional syntax,  
 as it uses Story\Optional regions for slug-accessibility.
 
-### Watcher Meta Properties
-Intended for Watcher features. The meta properties are:
+### Watcher-specific features
 * `WatcherPrologue`: marks a region as being a Watcher prologue region, allowing special interactions with Spinning Top and rot spreading when rooms are defined with he `watcherSentientRotRooms` region property (see [Region Properties](#region-properties) section)
 * `WatcherSentientRot`: marks a region as being a place where sentient rot lives, allowing special interactions with Spinning Top, forcing the player to spread rot when warping out of it, and preventing the player from being able to bad warp out of it. Useful for items like rotted versions of regions, such as WSUR, WHIR, WGWR, or WDSR. To enable Watcher to warp there via a bad warp, a dev tools DynamicWarpTarget set as a bad warp must be present in the rooms to warp to.
 * `WatcherRotImmune`: marks a region as being sentient rot resistant, meaning rot cannot be spread to it.
