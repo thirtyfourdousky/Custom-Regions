@@ -19,7 +19,7 @@ namespace CustomRegions.RegionProperties
 
         public class CRSProperties
         {
-            Region region;
+            readonly Region region;
             public CRSProperties(Region region)
             {
                 this.region = region;
@@ -96,6 +96,8 @@ namespace CustomRegions.RegionProperties
                         case nameof(invBlackFade): invBlackFade = float.Parse(value); break;
 
                         case nameof(cloudDirection): cloudDirection = float.Parse(value); break;
+
+                        case nameof(watcherSentientRotRooms): watcherSentientRotRooms = Regex.Split(value.Trim(), ", ").ToList(); break;
                     }
                 }
                 catch (Exception e) { CustomRegionsMod.CustomLog($"[ERROR] failed to parse property [{key}: {value}]\n{e}", true); }
@@ -210,6 +212,8 @@ namespace CustomRegions.RegionProperties
             public float? invBlackFade; //SB gimmick
 
             public float? cloudDirection;
+
+            public List<string> watcherSentientRotRooms = new();
         }
 
         private static ConditionalWeakTable<Region.RegionParams, RawProperties> _RawProperties = new();

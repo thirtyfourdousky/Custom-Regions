@@ -1,5 +1,7 @@
 
-## You are seeing the version of CRS for Rain World v1.10 / Watcher; For the Downpour version (v1.9.15), please visit [here.](https://github.com/Garrakx/Custom-Regions/tree/dp-release) For the legacy version (v1.5), please visit [here.](https://github.com/Garrakx/Custom-Regions/tree/master)
+## You are seeing the version of CRS for Rain World v1.10 / Watcher; 
+* For the Downpour version (v1.9.15), please visit [the dp-release branch.](https://github.com/Garrakx/Custom-Regions/tree/dp-release)
+* For the legacy version (v1.5), please visit [the master branch.](https://github.com/Garrakx/Custom-Regions/tree/master)
 ***
 # Custom Regions Support (CRS)
 ***
@@ -322,11 +324,14 @@ As an example:
 
 ## <a name="META"></a>MetaProperties
 A new file called MetaProperties.txt can be placed in World\XX to define the following meta properties for the region:
-* **Add Region to Story Regions (used for Wanderer requirements)**  
+* **Add Region to Story Regions (used for Wanderer passage requirements)**  
 * **Add Region to Optional Regions (visitable and has Safari menu)**  
 * **Remove Region from Safari Menu (active by default)**  
+* **Define a region as a Watcher prologue region**  
+* **Define a region as a Watcher rotted region**  
+* **Define a region as a Watcher sentient rot resistant region**  
 
-Proper useage goes like this:  
+Proper usage goes like this:  
 
 
     White,Yellow,Rivulet : Story  
@@ -353,7 +358,12 @@ Same goes for optional regions.
     Optional
 
 Safari can't have slugcat conditional syntax,  
-as it uses Story\Optional regions for slug-accessibility.  
+as it uses Story\Optional regions for slug-accessibility.
+
+### Watcher-specific features
+* `WatcherPrologue`: marks a region as being a Watcher prologue region, allowing special interactions with Spinning Top and rot spreading when rooms are defined with he `watcherSentientRotRooms` region property (see [Region Properties](#region-properties) section)
+* `WatcherSentientRot`: marks a region as being a place where sentient rot lives, allowing special interactions with Spinning Top, forcing the player to spread rot when warping out of it, and preventing the player from being able to bad warp out of it. Useful for items like rotted versions of regions, such as WSUR, WHIR, WGWR, or WDSR. To enable Watcher to warp there via a bad warp, a dev tools DynamicWarpTarget set as a bad warp must be present in the rooms to warp to.
+* `WatcherRotImmune`: marks a region as being sentient rot resistant, meaning rot cannot be spread to it.
 
 ## <a name="CONDITIONALS"></a>Region Conditional Lines 
 A line can be excluded if it doesn't match defined conditions.  
@@ -374,10 +384,10 @@ and the 2nd line happen if MSC is not active
 Conditions can be stacked, like so  
 
     //this line happens if AR is a region but TR isn't
-    {AR,!TR} 
+    {region:AR,!region:TR} 
     
     //this line happens if MSC isn't active and PC is a region
-    {!MSC,PC} 
+    {!MSC,region:PC} 
     
     //# is used as the first character to mark it as an id
     {#!lb-fgf-m4r-ik.coral-reef} 
@@ -394,6 +404,8 @@ Conditions can be stacked, like so
 Due to a bug, any time conditionals are used in the rooms section they should be at the bottom, otherwise items and creatures may start to disappear from shelters.
 
 ## <a name="REPLACE"></a>ReplaceRoom
+
+**NOTICE: this feature was integrated into the game in version v1.10.3; the tutorial will be left here regardless.**
 
 A new conditional link can be used to replace the room files for a particular room for a specific slugcat.
 
@@ -481,6 +493,10 @@ Inv Properties:
 | `invWormgrassSpam` | decimal | 0 | inv's LF gimmick, number is the chance to spawn wormgrass on each tile |
 | `invBlackFade` | decimal | 0 | inv's SB gimmick, number is how much to darken the screen each frame |
 | `invGrimeSpam` | decimal | 0 | inv's VS gimmick, number is grime amount to equalize to |
+
+Watcher Properties:
+| Name | Type | Default Value | Description |
+| `watcherSentientRotRooms` | list of room names |  | List of rooms that are infected with sentient rot by default. Ideally the rooms should be exclusive to Watcher and used in prologue regions, preferably via conditional links to replace existing rooms and using the relevant [meta property](#watcher-meta-properties). |
 
 ### Property Preprocessors
 

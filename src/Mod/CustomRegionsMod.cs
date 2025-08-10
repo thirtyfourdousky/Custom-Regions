@@ -9,8 +9,10 @@ using System.Security;
 using System.Security.Permissions;
 using CustomRegions.CustomWorld;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
+#pragma warning restore CS0618 // Type or member is obsolete
 
 
 namespace CustomRegions.Mod
@@ -70,6 +72,7 @@ namespace CustomRegions.Mod
                 RegionProperties.ScavengerHooks.ApplyHooks();
                 RegionProperties.MiscHooks.ApplyHooks();
                 RegionProperties.InvHooks.ApplyHooks();
+                RegionProperties.WatcherHooks.ApplyHooks();
             } catch (Exception ex) {
                 BepLogError("Error while applying Hooks: " + ex.ToString());
             }
