@@ -186,8 +186,10 @@ namespace CustomRegions.RegionProperties
         public static AbstractPhysicalObject.AbstractObjectType FakeExplosiveSpear = new("ExplosiveSpear", false);
         public static AbstractPhysicalObject.AbstractObjectType FakeElectricSpear = new("ElectricSpear", false);
         public static AbstractPhysicalObject.AbstractObjectType FakeHellSpear = new("HellSpear", false);
+        public static AbstractPhysicalObject.AbstractObjectType FakePoisonSpear = new("PoisonSpear", false);
         public static AbstractPhysicalObject.AbstractObjectType FakeHazer = new("Hazer", false);
         public static AbstractPhysicalObject.AbstractObjectType FakeVultureGrub = new("VultureGrub", false);
+        public static AbstractPhysicalObject.AbstractObjectType FakeRottenDangleFruit = new("RottenDangleFruit", false);
         public static AbstractPhysicalObject.AbstractObjectType FakeNone = new("None", false);
 
         public static AbstractPhysicalObject GenerateDefaultObject(World world, AbstractPhysicalObject.AbstractObjectType type, WorldCoordinate pos)
@@ -213,11 +215,22 @@ namespace CustomRegions.RegionProperties
             {
                 return new AbstractSpear(world, null, pos, id, false, Mathf.Lerp(0.35f, 0.6f, UnityEngine.Random.value));
             }
+            if (type == FakePoisonSpear)
+            {
+                return new AbstractSpear(world, null, pos, id, false) 
+                { 
+                    poison = 1f, 
+                    poisonHue = 0.3f + UnityEngine.Random.value * 0.6f //same hue range as Tardigrades
+                };
+            }
+            if (type == FakeRottenDangleFruit)
+            {
+                return new DangleFruit.AbstractDangleFruit(world, null, pos, id, -1, -1, true, null);
+            }
             if (type == FakeHazer)
             {
                 return new AbstractCreature(world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.Hazer), null, pos, id);
             }
-
             if (type == FakeVultureGrub)
             {
                 return new AbstractCreature(world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.VultureGrub), null, pos, id);
@@ -226,6 +239,10 @@ namespace CustomRegions.RegionProperties
             if (type == AbstractPhysicalObject.AbstractObjectType.Spear)
             {
                 return new AbstractSpear(world, null, pos, id, false);
+            }
+            if (type == AbstractPhysicalObject.AbstractObjectType.DangleFruit)
+            {
+                return new DangleFruit.AbstractDangleFruit(world, null, pos, id, -1, -1, false, null);
             }
             if (type == AbstractPhysicalObject.AbstractObjectType.WaterNut)
             {
