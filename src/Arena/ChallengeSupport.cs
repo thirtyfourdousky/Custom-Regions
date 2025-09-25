@@ -54,7 +54,7 @@ namespace CustomRegions.Arena
         private static void GameTypeSetup_FromString(On.ArenaSetup.GameTypeSetup.orig_FromString orig, ArenaSetup.GameTypeSetup self, string s)
         {
             orig(self, s);
-            if (ModManager.MSC && self.gameType == MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge && self.CustomChallengeID().Value is Structs.CustomChallenge challenge)
+            if (ModManager.MSC && self.gameType == DLCSharedEnums.GameTypeID.Challenge && self.CustomChallengeID().Value is Structs.CustomChallenge challenge)
             {
                 try
                 {
@@ -69,7 +69,7 @@ namespace CustomRegions.Arena
         private static void GameTypeSetup_InitAsGameType(On.ArenaSetup.GameTypeSetup.orig_InitAsGameType orig, ArenaSetup.GameTypeSetup self, ArenaSetup.GameTypeID gameType)
         {
             orig(self, gameType);
-            if (ModManager.MSC && gameType == MoreSlugcats.MoreSlugcatsEnums.GameTypeID.Challenge && self.CustomChallengeID().Value is Structs.CustomChallenge challenge)
+            if (ModManager.MSC && gameType == DLCSharedEnums.GameTypeID.Challenge && self.CustomChallengeID().Value is Structs.CustomChallenge challenge)
             {
                 try
                 {
