@@ -122,7 +122,7 @@ internal static class MiscHooks
                 {
                     if (UnityEngine.Random.value < items[type])
                     {
-                        var abstractPhysicalObject = ScavengerHooks.GenerateDefaultObject(world, type, parent.pos);
+                        var abstractPhysicalObject = AbstractObjectGeneration.GenerateDefaultObject(world, type, parent.pos);
                         new AbstractPhysicalObject.CreatureGripStick(parent, abstractPhysicalObject, 0, true);
                         break;
                     }

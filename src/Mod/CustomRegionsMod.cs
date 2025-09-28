@@ -85,6 +85,7 @@ namespace CustomRegions.Mod
             try
             {
                 RemixMenu.RegisterOptionInterface();
+                AbstractObjectGeneration.RegisterVanillaAbstractObjectCreations();
                 if (init) return;
                 init = true;
                 CreateCustomWorldLog();

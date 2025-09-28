@@ -4,6 +4,8 @@ using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static CustomRegions.RegionProperties.ScavengerHooks;
+using static CustomRegions.Mod.AbstractObjectGeneration;
 
 namespace CustomRegions.RegionProperties
 {
@@ -180,129 +182,6 @@ namespace CustomRegions.RegionProperties
                 return false;
 
             return true;
-        }
-
-        public static AbstractPhysicalObject.AbstractObjectType FakeKingVultureMask = new("KingVultureMask", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakeExplosiveSpear = new("ExplosiveSpear", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakeElectricSpear = new("ElectricSpear", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakeHellSpear = new("HellSpear", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakePoisonSpear = new("PoisonSpear", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakeHazer = new("Hazer", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakeVultureGrub = new("VultureGrub", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakeRottenDangleFruit = new("RottenDangleFruit", false);
-        public static AbstractPhysicalObject.AbstractObjectType FakeNone = new("None", false);
-
-        public static AbstractPhysicalObject GenerateDefaultObject(World world, AbstractPhysicalObject.AbstractObjectType type, WorldCoordinate pos)
-        {
-            var id = world.game.GetNewID();
-            if (type == FakeNone)
-            {
-                return null;
-            }
-            if (type == FakeKingVultureMask)
-            {
-                return new VultureMask.AbstractVultureMask(world, null, pos, id, id.RandomSeed, true);
-            }
-            if (type == FakeExplosiveSpear)
-            {
-                return new AbstractSpear(world, null, pos, id, true);
-            }
-            if (type == FakeElectricSpear)
-            {
-                return new AbstractSpear(world, null, pos, id, false, true);
-            }
-            if (type == FakeHellSpear)
-            {
-                return new AbstractSpear(world, null, pos, id, false, Mathf.Lerp(0.35f, 0.6f, UnityEngine.Random.value));
-            }
-            if (type == FakePoisonSpear)
-            {
-                return new AbstractSpear(world, null, pos, id, false) 
-                { 
-                    poison = 1f, 
-                    poisonHue = 0.3f + UnityEngine.Random.value * 0.6f //same hue range as Tardigrades
-                };
-            }
-            if (type == FakeRottenDangleFruit)
-            {
-                return new DangleFruit.AbstractDangleFruit(world, null, pos, id, -1, -1, true, null);
-            }
-            if (type == FakeHazer)
-            {
-                return new AbstractCreature(world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.Hazer), null, pos, id);
-            }
-            if (type == FakeVultureGrub)
-            {
-                return new AbstractCreature(world, StaticWorld.GetCreatureTemplate(CreatureTemplate.Type.VultureGrub), null, pos, id);
-            }
-
-            if (type == AbstractPhysicalObject.AbstractObjectType.Spear)
-            {
-                return new AbstractSpear(world, null, pos, id, false);
-            }
-            if (type == AbstractPhysicalObject.AbstractObjectType.DangleFruit)
-            {
-                return new DangleFruit.AbstractDangleFruit(world, null, pos, id, -1, -1, false, null);
-            }
-            if (type == AbstractPhysicalObject.AbstractObjectType.WaterNut)
-            {
-                return new WaterNut.AbstractWaterNut(world, null, pos, id, -1, -1, null, false);
-            }
-            if (type == AbstractPhysicalObject.AbstractObjectType.SporePlant)
-            {
-                return new SporePlant.AbstractSporePlant(world, null, pos, id, -1, -1, null, false, true);
-            }
-            if (type == AbstractPhysicalObject.AbstractObjectType.BubbleGrass)
-            {
-                return new BubbleGrass.AbstractBubbleGrass(world, null, pos, id, 1f, -1, -1, null);
-            }
-            if (type == AbstractPhysicalObject.AbstractObjectType.DataPearl)
-            {
-                return new DataPearl.AbstractDataPearl(world, type, null, pos, id, -1, -1, null, DataPearl.AbstractDataPearl.DataPearlType.Misc);
-            }
-            if (type == AbstractPhysicalObject.AbstractObjectType.VultureMask)
-            {
-                return new VultureMask.AbstractVultureMask(world, null, pos, id, id.RandomSeed, false);
-            }
-            if (type == MoreSlugcats.MoreSlugcatsEnums.AbstractObjectType.FireEgg)
-            {
-                return new MoreSlugcats.FireEgg.AbstractBugEgg(world, null, pos, id, Mathf.Lerp(0.35f, 0.6f, RWCustom.Custom.ClampedRandomVariation(0.5f, 0.5f, 2f)));
-            }
-            if (type == MoreSlugcats.MoreSlugcatsEnums.AbstractObjectType.JokeRifle)
-            {
-                return new JokeRifle.AbstractRifle(world, null, pos, id, JokeRifle.AbstractRifle.AmmoType.Rock);
-            }
-            if (type == DLCSharedEnums.AbstractObjectType.LillyPuck)
-            {
-                return new MoreSlugcats.LillyPuck.AbstractLillyPuck(world, null, pos, id, 3, -1, -1, null);
-            }
-
-            if (AbstractConsumable.IsTypeConsumable(type))
-            {
-                return new AbstractConsumable(world, type, null, pos, world.game.GetNewID(), -1, -1, null);
-            }
-            if (type.index == -1) return null;
-            return new AbstractPhysicalObject(world, type, null, pos, world.game.GetNewID());
-        }
-
-        public static AbstractPhysicalObject.AbstractObjectType FakeType(AbstractPhysicalObject obj)
-        {
-            if (obj is AbstractSpear s)
-            {
-                if (s.explosive) return FakeExplosiveSpear;
-                if (s.electric) return FakeElectricSpear;
-                if (s.hue != 0) return FakeHellSpear;
-            }
-            if (obj is AbstractCreature c)
-            {
-                if (c.creatureTemplate.type == CreatureTemplate.Type.Hazer) return FakeHazer;
-                if (c.creatureTemplate.type == CreatureTemplate.Type.VultureGrub) return FakeVultureGrub;
-            }
-            if (obj is VultureMask.AbstractVultureMask m && m.king)
-            {
-                return FakeKingVultureMask;
-            }
-            return null;
         }
 
         private static int ScavengerAI_CollectScore_PhysicalObject_bool(On.ScavengerAI.orig_CollectScore_PhysicalObject_bool orig, ScavengerAI self, PhysicalObject obj, bool weaponFiltered)
