@@ -1,0 +1,18 @@
+{
+  "Title": "Custom Regions Support - CRS",
+  "Description": "Support for modded regions! Maintained by Bro, thumbnail by @Nautillo1\r\n- This mod does nothing on its own, it is a dependency. \r\n- The pack browser no longer exists as it has been replaced by the Steam Workshop.\r\n\r\nCheck the repository here: https://github.com/Garrakx/Custom-Regions/tree/dp-release",
+  "ID": "crs",
+  "Version": "0.10.5.7",
+  "TargetGameVersion": "v1.10.04",
+  "Requirements": "",
+  "RequirementNames": "",
+  "Authors": "Garrakx \u0026 Bro",
+  "Visibility": "Public",
+  "Tags": [
+    "Regions",
+    "Dependency"
+  ],
+  "WorkshopID": 2941565790,
+  "UploadFilesOnly": true,
+  "UploadThumbnail": false
+}

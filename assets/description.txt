@@ -1,0 +1,6 @@
+Custom Regions Support - CRS [BETA]
+Support for modded regions! Maintained by Bro, thumbnail by @Nautillo1
+- This mod does nothing on its own, it is a dependency. 
+- The pack browser no longer exists as it has been replaced by the Steam Workshop. 
+
+Check the repository here: https://github.com/Garrakx/Custom-Regions/tree/dp-release
