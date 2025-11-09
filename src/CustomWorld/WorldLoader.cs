@@ -338,7 +338,7 @@ namespace CustomRegions.CustomWorld
                         // Check if connection is reciprocal
                         if (!FromConnectionsToList(currentLine.connections).Contains(otherConnectedLine.roomName)) {
                             // Disconnect both lines between each other
-                            CustomRegionsMod.CustomLog($"          Broken connection. Current line does not have room [{otherConnectedLine.roomName}]. Disconnecting...");
+                            CustomRegionsMod.CustomLog($"          Broken connection. Current line for room [{currentLine.roomName}] does not have room [{otherConnectedLine.roomName}]. Disconnecting...");
 
                             WorldDataLine temp1;
                             // Disconnect current room from other rooms
@@ -410,7 +410,7 @@ namespace CustomRegions.CustomWorld
                         //if (!found)
                         {
                             // current line is connected to nowwhere
-                            CustomRegionsMod.CustomLog($"          Broken connection. Current line has a broken connection [{currentConnections[l]}]. " +
+                            CustomRegionsMod.CustomLog($"          Broken connection. Current line [{currentLine.roomName}] has a broken connection [{currentConnections[l]}]. " +
                                 $"Disconnecting...");
 
                             // Disconnect current broken connection
@@ -465,7 +465,7 @@ namespace CustomRegions.CustomWorld
             */
             brokenLines = brokenLines.Distinct().ToList();
             if (brokenLines.Count != 0) {
-                CustomRegionsMod.CustomLog($"\nThese lines were disconnected:");
+                CustomRegionsMod.CustomLog($"\nThere are probably missing connections in the world file. Analysis returned:");
                 foreach (var item in brokenLines) {
                     CustomRegionsMod.CustomLog($"Room: [{item.roomName}]. Connections: [{item.connections}] " +
                         $"may need to be replaced with -> [{Regex.Split(fixedLines.Find(x => x.roomName.Equals(item.roomName)).line, " : ")[1]}]");
