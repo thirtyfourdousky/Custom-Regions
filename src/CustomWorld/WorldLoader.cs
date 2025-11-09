@@ -468,7 +468,7 @@ namespace CustomRegions.CustomWorld
                 CustomRegionsMod.CustomLog($"\nThese lines were disconnected:");
                 foreach (var item in brokenLines) {
                     CustomRegionsMod.CustomLog($"Room: [{item.roomName}]. Connections: [{item.connections}] " +
-                        $"replaced with -> [{Regex.Split(fixedLines.Find(x => x.roomName.Equals(item.roomName)).line, " : ")[1]}]");
+                        $"may need to be replaced with -> [{Regex.Split(fixedLines.Find(x => x.roomName.Equals(item.roomName)).line, " : ")[1]}]");
                 }
                 CustomRegionsMod.CustomLog($"Found broken connections in world file! Read {CustomRegionsMod.logFileName} for more information", true);
             }
