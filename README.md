@@ -496,7 +496,8 @@ Inv Properties:
 
 Watcher Properties:
 | Name | Type | Default Value | Description |
-| `watcherSentientRotRooms` | list of room names |  | List of rooms that are infected with sentient rot by default. Ideally the rooms should be exclusive to Watcher and used in prologue regions, preferably via conditional links to replace existing rooms and using the relevant [meta property](#watcher-meta-properties). |
+| ------------ | ------------- | ----------- | ------------- |
+| `watcherSentientRotRooms` | list of room names |  | Comma-separated list of rooms that are infected with sentient rot by default. Ideally the rooms should be exclusive to Watcher and used in prologue regions, preferably via conditional links to replace existing rooms and using the relevant [meta property](#watcher-meta-properties). These rooms *must* have Room Specific Script enabled in dev tools. |
 
 ### Property Preprocessors
 
