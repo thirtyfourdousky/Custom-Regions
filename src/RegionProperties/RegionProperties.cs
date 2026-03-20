@@ -110,11 +110,6 @@ namespace CustomRegions.RegionProperties
                                 {
                                     WatcherRoomSpecificScript.sentientRotVanillaRooms[len + i] = toAdd[i];
                                 }
-
-                                for (int i = 0; i < WatcherRoomSpecificScript.sentientRotVanillaRooms.Length; i++)
-                                {
-                                    CustomRegionsMod.bepLog.LogInfo(WatcherRoomSpecificScript.sentientRotVanillaRooms[i] ?? "NULL!!!!!!!");
-                                }
                             }
                             break;
                     }
