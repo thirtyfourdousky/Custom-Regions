@@ -12,7 +12,7 @@ using System.CodeDom;
 
 namespace CustomRegions.Collectables
 {
-    internal static class PearlData
+    public static class PearlData
     {
         public static void Refresh()
         {
