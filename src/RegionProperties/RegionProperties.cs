@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Watcher;
 using static CustomRegions.CustomWorld.RegionPreprocessors;
 
 namespace CustomRegions.RegionProperties
@@ -97,7 +98,20 @@ namespace CustomRegions.RegionProperties
 
                         case nameof(cloudDirection): cloudDirection = float.Parse(value); break;
 
-                        case nameof(watcherSentientRotRooms): watcherSentientRotRooms = Regex.Split(value.Trim(), ", ").ToList(); break;
+                        case nameof(watcherSentientRotRooms):
+                            watcherSentientRotRooms = Regex.Split(value.Trim(), ", ").ToList();
+                            _ = WatcherRoomSpecificScript.sentientRotVanillaRooms;
+                            string[] toAdd = watcherSentientRotRooms.Except(WatcherRoomSpecificScript.sentientRotVanillaRooms).ToArray();
+                            if (toAdd.Length > 0)
+                            {
+                                int len = WatcherRoomSpecificScript.sentientRotVanillaRooms.Length;
+                                Array.Resize(ref WatcherRoomSpecificScript.sentientRotVanillaRooms, len + toAdd.Length);
+                                for (int i = 0; i < toAdd.Length; i++)
+                                {
+                                    WatcherRoomSpecificScript.sentientRotVanillaRooms[len + i] = toAdd[i];
+                                }
+                            }
+                            break;
                     }
                 }
                 catch (Exception e) { CustomRegionsMod.CustomLog($"[ERROR] failed to parse property [{key}: {value}]\n{e}", true); }
