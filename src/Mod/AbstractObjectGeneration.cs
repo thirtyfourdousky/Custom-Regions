@@ -92,6 +92,7 @@ namespace CustomRegions.Mod
             RegisterAbstractObjectGenerator(AbstractPhysicalObject.AbstractObjectType.DataPearl, (world, type, pos, id) => new DataPearl.AbstractDataPearl(world, type, null, pos, id, -1, -1, null, DataPearl.AbstractDataPearl.DataPearlType.Misc));
             RegisterAbstractObjectGenerator(AbstractPhysicalObject.AbstractObjectType.PebblesPearl, (world, type, pos, id) => new DataPearl.AbstractDataPearl(world, type, null, pos, id, -1, -1, null, DataPearl.AbstractDataPearl.DataPearlType.PebblesPearl));
             RegisterAbstractObjectGenerator(AbstractPhysicalObject.AbstractObjectType.VultureMask, (world, _, pos, id) => new VultureMask.AbstractVultureMask(world, null, pos, id, id.RandomSeed, false));
+            RegisterAbstractObjectGenerator(AbstractPhysicalObject.AbstractObjectType.GraffitiBomb, (world, _, pos, id) => new GraffitiBomb.AbstractGraffitiBomb(world, null, pos, id, -1, -1, null));
 
             if (ModManager.MSC)
             {
