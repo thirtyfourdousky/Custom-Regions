@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
 using CustomRegions.CustomWorld;
+using CustomRegions.Progression;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 [module: UnverifiableCode]
@@ -73,6 +74,7 @@ namespace CustomRegions.Mod
                 RegionProperties.MiscHooks.ApplyHooks();
                 RegionProperties.InvHooks.ApplyHooks();
                 RegionProperties.WatcherHooks.ApplyHooks();
+                SafariEnums.ApplyHooks();
             } catch (Exception ex) {
                 BepLogError("Error while applying Hooks: " + ex.ToString());
             }
